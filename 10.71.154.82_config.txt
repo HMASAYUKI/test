@@ -1,0 +1,584 @@
+
+Building configuration...
+
+Current configuration : 19196 bytes
+!
+! Last configuration change at 15:48:14 JST Thu Aug 19 2021 by cisco
+! NVRAM config last updated at 15:53:58 JST Wed Jul 21 2021 by cisco
+!
+version 17.3
+service timestamps debug datetime msec
+service timestamps log datetime msec show-timezone year
+service call-home
+platform qfp utilization monitor load 80
+no platform punt-keepalive disable-kernel-core
+platform console virtual
+!
+hostname CSR1KV-82
+!
+boot-start-marker
+boot system flash bootflash:csr1000v-universalk9.17.03.03.SPA.bin
+boot-end-marker
+!
+!
+no logging console
+enable secret 9 $9$/V9xXd.oYOjpc.$OG/xbxMMOIi/nT5/dyozUofVr1B.JxjaxTOmNMNC5Ho
+enable password cisco
+!
+aaa new-model
+!
+!
+aaa authentication login default local
+aaa authorization exec default local 
+!
+!
+!
+!
+!
+!
+aaa session-id common
+clock timezone JST 9 0
+!
+!
+!
+!
+!
+!
+!
+ip name-server 8.8.8.8 171.70.168.183 64.104.14.184
+ip domain name cisco.com
+ip dhcp excluded-address 172.16.1.254
+!
+ip dhcp pool Pool1
+ network 172.16.1.0 255.255.255.0
+ default-router 172.16.1.254 
+!
+!
+!
+login on-success log
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+! 
+! 
+! 
+! 
+!
+!
+!
+flow record LIVEACTION-FLOWRECORD
+ description DO NOT MODIFY. USED BY LIVEACTION.
+ match flow direction
+ match interface input
+ match ipv4 destination address
+ match ipv4 protocol
+ match ipv4 source address
+ match routing vrf input
+ match transport destination-port
+ match transport source-port
+ collect application http host
+ collect application name
+ collect application ssl common-name
+ collect counter bytes
+ collect counter packets
+ collect interface output
+ collect ipv4 destination mask
+ collect ipv4 dscp
+ collect ipv4 id
+ collect ipv4 source mask
+ collect ipv4 source prefix
+ collect routing destination as
+ collect routing next-hop address ipv4
+ collect routing source as
+ collect timestamp sys-uptime first
+ collect timestamp sys-uptime last
+ collect transport tcp flags
+!
+!
+flow exporter 10.71.130.53
+ destination 10.71.130.53
+!
+!
+flow exporter 10.71.154.122
+ destination 10.71.154.122
+ transport udp 6007
+!
+!
+flow exporter 10.71.154.125
+ destination 10.71.154.125
+ transport udp 6007
+!
+!
+flow exporter 10.71.130.60
+ destination 10.71.130.60
+ transport udp 6007
+!
+!
+flow exporter LIVEACTION-FLOWEXPORTER-IPFIX
+ description DO NOT MODIFY. USED BY LIVEACTION.
+ destination 10.71.154.108
+ source GigabitEthernet1
+ transport udp 2055
+ export-protocol ipfix
+ option interface-table
+ option vrf-table
+ option application-table
+ option c3pl-class-table
+ option c3pl-policy-table
+ option application-attributes
+!
+!
+flow exporter 10.71.154.98
+ destination 10.71.154.98
+ transport udp 6007
+!
+!
+flow monitor LIVEACTION-FLOWMONITOR
+ description DO NOT MODIFY. USED BY LIVEACTION.
+ exporter LIVEACTION-FLOWEXPORTER-IPFIX
+ cache timeout inactive 10
+ cache timeout active 60
+ record LIVEACTION-FLOWRECORD
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-350779746
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-350779746
+ revocation-check none
+ rsakeypair TP-self-signed-350779746
+!
+crypto pki trustpoint SLA-TrustPoint
+ enrollment terminal
+ revocation-check crl
+!
+crypto pki trustpoint DNAC-CA
+ enrollment mode ra
+ enrollment terminal
+ usage ssl-client
+ revocation-check crl none
+!
+!
+crypto pki certificate chain TP-self-signed-350779746
+ certificate self-signed 01
+  3082032E 30820216 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  30312E30 2C060355 04031325 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 33353037 37393734 36301E17 0D313930 35303632 32313232 
+  345A170D 33303031 30313030 30303030 5A303031 2E302C06 03550403 1325494F 
+  532D5365 6C662D53 69676E65 642D4365 72746966 69636174 652D3335 30373739 
+  37343630 82012230 0D06092A 864886F7 0D010101 05000382 010F0030 82010A02 
+  82010100 9032DE1F DF5F82D4 D0994331 6165BE76 79736673 ACA2705D DA95AF1C 
+  84D3FABC 8A369A17 CA766CDE 0BA507B4 E3006D07 2976BC3C 196C6C26 089FD859 
+  DD5CE230 4D59BBDE 20283CDF D876DBA8 3D78A76A C0D0A4F5 6F0F940E EA2051D8 
+  49460204 39C8AD19 0F549A13 E5246D6B 8AC82F57 502E4D45 71BCA104 D660E46A 
+  61F51887 C6A7808A D98BFEDC 3C0A4D68 F8D7F773 575EDAD5 BF39DEA7 9DB9ACA7 
+  7D5DBFD7 8A15BC66 B4721DDE 1CB0C630 015CEFA8 D3A2D9B6 80A5D420 818328CE 
+  F20740DA 76FCE432 9AC662E3 4777D62B 3B323030 68CDD070 728F7AAB F249FEF2 
+  86ED1059 826C49FE BCDA5D4E 894C718D AEF3C770 2C07C45C E41D4CC0 B56AAE2C 
+  E0F231AD 02030100 01A35330 51300F06 03551D13 0101FF04 05300301 01FF301F 
+  0603551D 23041830 16801431 9861EA5A 49810352 3D9B8C34 A0292165 8632FD30 
+  1D060355 1D0E0416 04143198 61EA5A49 8103523D 9B8C34A0 29216586 32FD300D 
+  06092A86 4886F70D 01010505 00038201 0100848D 2A44D0B0 6A2176FF 8A3A13E2 
+  00218F7A 7B2B71CF 50F7C457 856FB001 008D320C 9BAD82D6 C89567B6 A2A39E0B 
+  B40CDD1F 86A9DAED 4AF05966 93CDD9EC 7A28F556 4D924934 F8B838FD C76159D5 
+  A9C9B5FC 488FA1BF F10CAF63 6F71DD6B 4B740D17 692F1493 E5B5C71C CA4087D4 
+  31E1AC5F 286BB5BC 9D9CDC73 AEB75C4D 572B1207 7A89CC9B B0420AE4 D00A10A5 
+  60A69E74 BD617F38 AB9B23E1 A709C729 D9E078CB FEFD3ED0 B7446966 5F52FA2B 
+  07740D52 55FDC5C4 98B932B1 CF3DD2AB 321531EF 8156D9BA 7442B1F3 89B2F604 
+  2AA3DCE6 09593390 36ECE9AD 87CFF841 480A6543 3835DB32 F5363F45 C69164B2 
+  B8476FEC 11339433 93CCD2CB BBD945AB D418
+  	quit
+crypto pki certificate chain SLA-TrustPoint
+ certificate ca 01
+  30820321 30820209 A0030201 02020101 300D0609 2A864886 F70D0101 0B050030 
+  32310E30 0C060355 040A1305 43697363 6F312030 1E060355 04031317 43697363 
+  6F204C69 63656E73 696E6720 526F6F74 20434130 1E170D31 33303533 30313934 
+  3834375A 170D3338 30353330 31393438 34375A30 32310E30 0C060355 040A1305 
+  43697363 6F312030 1E060355 04031317 43697363 6F204C69 63656E73 696E6720 
+  526F6F74 20434130 82012230 0D06092A 864886F7 0D010101 05000382 010F0030 
+  82010A02 82010100 A6BCBD96 131E05F7 145EA72C 2CD686E6 17222EA1 F1EFF64D 
+  CBB4C798 212AA147 C655D8D7 9471380D 8711441E 1AAF071A 9CAE6388 8A38E520 
+  1C394D78 462EF239 C659F715 B98C0A59 5BBB5CBD 0CFEBEA3 700A8BF7 D8F256EE 
+  4AA4E80D DB6FD1C9 60B1FD18 FFC69C96 6FA68957 A2617DE7 104FDC5F EA2956AC 
+  7390A3EB 2B5436AD C847A2C5 DAB553EB 69A9A535 58E9F3E3 C0BD23CF 58BD7188 
+  68E69491 20F320E7 948E71D7 AE3BCC84 F10684C7 4BC8E00F 539BA42B 42C68BB7 
+  C7479096 B4CB2D62 EA2F505D C7B062A4 6811D95B E8250FC4 5D5D5FB8 8F27D191 
+  C55F0D76 61F9A4CD 3D992327 A8BB03BD 4E6D7069 7CBADF8B DF5F4368 95135E44 
+  DFC7C6CF 04DD7FD1 02030100 01A34230 40300E06 03551D0F 0101FF04 04030201 
+  06300F06 03551D13 0101FF04 05300301 01FF301D 0603551D 0E041604 1449DC85 
+  4B3D31E5 1B3E6A17 606AF333 3D3B4C73 E8300D06 092A8648 86F70D01 010B0500 
+  03820101 00507F24 D3932A66 86025D9F E838AE5C 6D4DF6B0 49631C78 240DA905 
+  604EDCDE FF4FED2B 77FC460E CD636FDB DD44681E 3A5673AB 9093D3B1 6C9E3D8B 
+  D98987BF E40CBD9E 1AECA0C2 2189BB5C 8FA85686 CD98B646 5575B146 8DFC66A8 
+  467A3DF4 4D565700 6ADF0F0D CF835015 3C04FF7C 21E878AC 11BA9CD2 55A9232C 
+  7CA7B7E6 C1AF74F6 152E99B7 B1FCF9BB E973DE7F 5BDDEB86 C71E3B49 1765308B 
+  5FB0DA06 B92AFE7F 494E8A9E 07B85737 F3A58BE1 1A48A229 C37C1E69 39F08678 
+  80DDCD16 D6BACECA EEBC7CF9 8428787B 35202CDC 60E4616A B623CDBD 230E3AFB 
+  418616A9 4093E049 4D10AB75 27E86F73 932E35B5 8862FDAE 0275156F 719BB2F0 
+  D697DF7F 28
+  	quit
+crypto pki certificate chain DNAC-CA
+ certificate ca 00F89B4A4B0D540B86
+  30820397 3082027F A0030201 02020900 F89B4A4B 0D540B86 300D0609 2A864886 
+  F70D0101 0B050030 62312D30 2B060355 04030C24 37613865 37373331 2D306565 
+  382D3231 35612D64 6461362D 30316635 37373438 64656339 31163014 06035504 
+  0A0C0D43 6973636F 20537973 74656D73 31193017 06035504 0B0C1043 6973636F 
+  20444E41 2043656E 74657230 1E170D31 39303932 35303233 3832315A 170D3232 
+  30363231 30323338 32315A30 62312D30 2B060355 04030C24 37613865 37373331 
+  2D306565 382D3231 35612D64 6461362D 30316635 37373438 64656339 31163014 
+  06035504 0A0C0D43 6973636F 20537973 74656D73 31193017 06035504 0B0C1043 
+  6973636F 20444E41 2043656E 74657230 82012230 0D06092A 864886F7 0D010101 
+  05000382 010F0030 82010A02 82010100 D7DB9E00 072A3EC5 1D459424 37374AAD 
+  73FCF0CF 62067988 7700C09E 290AB50A 451E3521 E26FBDEE D22CE302 818C7941 
+  114DBFFD 3A705993 9E6129E8 0E2B70C7 21137C2C B52B8F02 6BBA8D24 AC5A3729 
+  903B8DE7 20777FEF 5CD58098 F15E5443 8CEFD198 8A49A62D B26E596A 30EE6A24 
+  A6000659 08469AAF DA003C51 1F0BF0EC 959BD4F3 B0983477 411B22F3 DC5FFB65 
+  0C5F6EF2 FEC13017 C0CB8430 BCAAB9D7 E6F24679 B10AF9CC F17CFEE4 ECDC4E73 
+  57902099 6BFF3F11 BBFDDFA2 780922E1 71FF57EE F74F3F4A 1C8AF274 2AE815CA 
+  019E7824 B70477D6 BC281C19 521858B9 A2422CC1 D33B284D 914FA744 60006A78 
+  3DB6B223 D63F0262 80557FCA A4DBBE73 02030100 01A35030 4E301D06 03551D0E 
+  04160414 93F8B855 E31F4F46 0DC8C757 654A83AC 2B1B89D1 301F0603 551D2304 
+  18301680 1493F8B8 55E31F4F 460DC8C7 57654A83 AC2B1B89 D1300C06 03551D13 
+  04053003 0101FF30 0D06092A 864886F7 0D01010B 05000382 010100CA A79207ED 
+  FAC5885D D7F6E35E E0D66DC0 1F93AECD 86FDACB6 A25B47B1 D7D9C98D 440D1D50 
+  3B5DE911 B35A3B36 8FDAEAB2 53542755 09A2F811 AEFA4FA5 ECA2DFED D4DA9B2F 
+  4821A6B3 4AC348AB E2175825 04D7DD00 77478D85 0DBB627A F0164F58 AD0A2B39 
+  D2B88EE4 192ED9F3 84E861C7 AF3C7DD5 81B9095B 0BBC138E 08096FEE 898EC198 
+  CC395FD6 1EA89613 08C75FA3 FE316481 9CA29EDD E44C06A0 24B8E3D3 96ADE4D1 
+  3D106E31 F9634345 E2343912 370419A7 30A7B890 16819C58 EE68657E 1AF40B4B 
+  7A6C83C0 2851CD2D D4045595 75CB773F 8FF7E9FC 92BEC5EE AF5D937B C249D5EF 
+  C63BA2AD 8BE7912E 62EBEE1B 4FE7D6BC 5B813342 3F15148D BE1824
+  	quit
+!
+crypto pki certificate pool
+ cabundle nvram:ios_core.p7b
+!
+license udi pid CSR1000V sn 99X9XBM3YZB
+diagnostic bootup level minimal
+memory free low-watermark processor 80557
+!
+!
+spanning-tree extend system-id
+!
+username cisco privilege 15 secret 9 $9$AtwjtJxbZ66gFU$g1ukNIKSylRJ8H/xF4H6hyesLGToZUu4o9uhhpE0Dus
+!
+redundancy
+!
+!
+!
+!
+!
+!
+cdp run
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+! 
+!
+!
+interface VirtualPortGroup0
+ ip flow monitor LIVEACTION-FLOWMONITOR input
+ ip flow monitor LIVEACTION-FLOWMONITOR output
+ ip address 192.168.36.1 255.255.255.0
+ ip nat inside
+ no mop enabled
+ no mop sysid
+!
+interface VirtualPortGroup3
+ ip address 192.168.37.1 255.255.255.0
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet1
+ ip flow monitor LIVEACTION-FLOWMONITOR input
+ ip flow monitor LIVEACTION-FLOWMONITOR output
+ ip address 10.71.154.82 255.255.255.192
+ ip nbar protocol-discovery
+ ip nat outside
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet2
+ no ip address
+ ip nat inside
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet3
+ no ip address
+ shutdown
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+!
+virtual-service
+ signing level unsigned
+!
+!
+virtual-service csr_mgmt
+ ip shared host-interface GigabitEthernet1
+!
+virtual-service teagent
+!
+iox
+ip forward-protocol nd
+ip http server
+ip http authentication local
+ip http secure-server
+ip http client source-interface GigabitEthernet1
+!
+ip nat inside source static tcp 172.16.1.2 80 interface GigabitEthernet1 50080
+ip nat inside source static tcp 172.16.1.1 22 interface GigabitEthernet1 50022
+ip nat inside source static tcp 172.16.1.1 443 interface GigabitEthernet1 50443
+ip nat inside source list 1 interface GigabitEthernet1 overload
+ip nat inside source list GS_NAT_ACL interface GigabitEthernet1 overload
+ip route 0.0.0.0 0.0.0.0 10.71.154.94
+ip ssh source-interface GigabitEthernet1
+ip ssh version 2
+ip scp server enable
+!
+ip access-list standard GS_NAT_ACL
+ 10 permit 192.168.36.0 0.0.0.255
+!
+!
+logging trap critical
+logging source-interface GigabitEthernet1
+logging host 10.71.130.53
+logging host 10.71.154.79
+logging host 10.71.154.96
+logging host 10.71.154.122
+logging host 10.71.154.125
+logging host 10.71.130.60
+logging host 10.71.154.98
+ip access-list standard 1
+ 10 permit 172.16.1.0 0.0.0.255
+!
+!
+snmp-server community public RO
+snmp-server community private RW
+snmp-server community pubilc RO
+snmp-server community pubiic RO
+snmp-server trap-source GigabitEthernet1
+snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+snmp-server enable traps vrrp
+snmp-server enable traps pfr
+snmp-server enable traps flowmon
+snmp-server enable traps ds1
+snmp-server enable traps entity-perf throughput-notif
+snmp-server enable traps call-home message-send-fail server-fail
+snmp-server enable traps tty
+snmp-server enable traps casa
+snmp-server enable traps ospf state-change
+snmp-server enable traps ospf errors
+snmp-server enable traps ospf retransmit
+snmp-server enable traps ospf lsa
+snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+snmp-server enable traps ospf cisco-specific state-change shamlink interface
+snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+snmp-server enable traps ospf cisco-specific errors
+snmp-server enable traps ospf cisco-specific retransmit
+snmp-server enable traps ospf cisco-specific lsa
+snmp-server enable traps eigrp
+snmp-server enable traps adslline
+snmp-server enable traps vdsl2line
+snmp-server enable traps license
+snmp-server enable traps smart-license
+snmp-server enable traps ethernet evc status create delete
+snmp-server enable traps ether-oam
+snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config
+snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up
+snmp-server enable traps entity-qfp mem-res-thresh throughput-notif
+snmp-server enable traps entity-state
+snmp-server enable traps diameter
+snmp-server enable traps bgp cbgp2
+snmp-server enable traps dlsw
+snmp-server enable traps entity-sensor
+snmp-server enable traps resource-policy
+snmp-server enable traps flash insertion removal lowspace
+snmp-server enable traps nhrp nhs
+snmp-server enable traps nhrp nhc
+snmp-server enable traps nhrp nhp
+snmp-server enable traps nhrp quota-exceeded
+snmp-server enable traps ipsla
+snmp-server enable traps cnpd
+snmp-server enable traps entity-diag boot-up-fail hm-test-recover hm-thresh-reached scheduled-test-fail
+snmp-server enable traps auth-framework sec-violation
+snmp-server enable traps bfd
+snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency
+snmp-server enable traps memory bufferpeak
+snmp-server enable traps config-copy
+snmp-server enable traps config
+snmp-server enable traps config-ctid
+snmp-server enable traps dhcp
+snmp-server enable traps fru-ctrl
+snmp-server enable traps entity
+snmp-server enable traps event-manager
+snmp-server enable traps frame-relay
+snmp-server enable traps frame-relay subif
+snmp-server enable traps hsrp
+snmp-server enable traps pimstdmib neighbor-loss invalid-register invalid-join-prune rp-mapping-change interface-election
+snmp-server enable traps ipmulticast
+snmp-server enable traps isis
+snmp-server enable traps ip local pool
+snmp-server enable traps msdp
+snmp-server enable traps mvpn
+snmp-server enable traps ospfv3 state-change
+snmp-server enable traps ospfv3 errors
+snmp-server enable traps pim neighbor-change rp-mapping-change invalid-pim-message
+snmp-server enable traps pppoe
+snmp-server enable traps cpu threshold
+snmp-server enable traps rsvp
+snmp-server enable traps l2tun session
+snmp-server enable traps l2tun pseudowire status
+snmp-server enable traps aaa_server
+snmp-server enable traps atm subif
+snmp-server enable traps pki
+snmp-server enable traps ike policy add
+snmp-server enable traps ike policy delete
+snmp-server enable traps ike tunnel start
+snmp-server enable traps ike tunnel stop
+snmp-server enable traps ipsec cryptomap add
+snmp-server enable traps ipsec cryptomap delete
+snmp-server enable traps ipsec cryptomap attach
+snmp-server enable traps ipsec cryptomap detach
+snmp-server enable traps ipsec tunnel start
+snmp-server enable traps ipsec tunnel stop
+snmp-server enable traps ipsec too-many-sas
+snmp-server enable traps gdoi gm-start-registration
+snmp-server enable traps gdoi gm-registration-complete
+snmp-server enable traps gdoi gm-re-register
+snmp-server enable traps gdoi gm-rekey-rcvd
+snmp-server enable traps gdoi gm-rekey-fail
+snmp-server enable traps gdoi ks-rekey-pushed
+snmp-server enable traps gdoi gm-incomplete-cfg
+snmp-server enable traps gdoi ks-no-rsa-keys
+snmp-server enable traps gdoi ks-new-registration
+snmp-server enable traps gdoi ks-reg-complete
+snmp-server enable traps gdoi ks-role-change
+snmp-server enable traps gdoi ks-gm-deleted
+snmp-server enable traps gdoi ks-peer-reachable
+snmp-server enable traps gdoi ks-peer-unreachable
+snmp-server enable traps firewall serverstatus
+snmp-server enable traps dsp card-status
+snmp-server enable traps dsp oper-state
+snmp-server enable traps dsp video-usage
+snmp-server enable traps dsp video-out-of-resource
+snmp-server enable traps frame-relay multilink bundle-mismatch
+snmp-server enable traps syslog
+snmp-server enable traps mpls rfc ldp
+snmp-server enable traps mpls ldp
+snmp-server enable traps mpls rfc traffic-eng
+snmp-server enable traps mpls traffic-eng
+snmp-server enable traps mpls fast-reroute protected
+snmp-server enable traps otn
+snmp-server enable traps pw vc
+snmp-server enable traps lisp
+snmp-server enable traps dial
+snmp-server enable traps sbc adj-status
+snmp-server enable traps sbc blacklist
+snmp-server enable traps sbc congestion-alarm
+snmp-server enable traps sbc h248-ctrlr-status
+snmp-server enable traps sbc media-source
+snmp-server enable traps sbc radius-conn-status
+snmp-server enable traps sbc sla-violation
+snmp-server enable traps sbc sla-violation-rev1
+snmp-server enable traps sbc svc-state
+snmp-server enable traps sbc qos-statistics
+snmp-server enable traps ethernet cfm alarm
+snmp-server enable traps alarms informational
+snmp-server enable traps rf
+snmp-server enable traps transceiver all
+snmp-server enable traps bulkstat collection transfer
+snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
+snmp-server enable traps mpls vpn
+snmp-server enable traps mpls rfc vpn
+snmp-server enable traps voice
+snmp-server enable traps ccme
+snmp-server enable traps srst
+snmp-server host 10.71.130.60 version 2c private 
+snmp-server host 10.71.154.122 version 2c private 
+snmp-server host 10.71.154.125 version 2c private 
+snmp-server host 10.71.154.96 version 2c private 
+snmp-server host 10.71.130.53 version 2c public 
+snmp-server host 10.71.154.125 version 2c public 
+snmp-server host 10.71.154.79 version 2c public 
+snmp-server host 10.71.154.98 version 2c public 
+snmp ifmib ifindex persist
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ stopbits 1
+line vty 0
+ transport input telnet ssh
+line vty 1
+ length 0
+ transport input telnet ssh
+line vty 2 4
+ transport input telnet ssh
+!
+call-home
+ ! If contact email address in call-home is configured as sch-smart-licensing@cisco.com
+ ! the email address configured in Cisco Smart License Portal will be used as contact email address to send SCH notifications.
+ contact-email-addr sch-smart-licensing@cisco.com
+ profile "CiscoTAC-1"
+  active
+  destination transport-method http
+ntp server 10.71.154.94
+!
+!
+!
+!
+!
+app-hosting appid guestshell
+ app-vnic gateway0 virtualportgroup 0 guest-interface 0
+  guest-ipaddress 192.168.36.2 netmask 255.255.255.0
+ app-default-gateway 192.168.36.1 guest-interface 0
+ name-server0 171.70.168.183
+netconf-yang
+end
